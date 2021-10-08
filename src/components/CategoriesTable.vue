@@ -13,36 +13,6 @@
         </v-card>
       </v-col>
     </v-row>
-    <!-- <v-card class="mt-2">
-      <div class="ps-4 pt-4 title grey--text">Budgets</div>
-      <v-simple-table v-if="categories.length">
-        <template v-slot:default>
-          <thead>
-            <tr>
-              <th class="text-left">Category</th>
-              <th class="text-left">Budget</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="item in categories"
-              :key="item.id"
-              @click="categoryDialog(item)"
-            >
-              <td>{{ item.name }}</td>
-              <td>{{ item.budget }}</td>
-            </tr>
-          </tbody>
-        </template>
-      </v-simple-table>
-
-      <v-skeleton-loader
-        v-else
-        class="mx-auto"
-        max-width="300"
-        type="table-tbody"
-      ></v-skeleton-loader>
-    </v-card> -->
 
     <v-dialog v-model="dialog" persistent max-width="600px" v-if="dialog">
       <v-card>
@@ -102,7 +72,7 @@ export default {
       this.$store
         .dispatch("saveNewBudget", {
           id: this.selectedCategory.id,
-          data: { budget: this.newBudget },
+          data: { budget: parseFloat(this.newBudget).toFixed(2) },
         })
         .then(() => {
           this.dialog = false;
