@@ -68,17 +68,30 @@ export default {
       this.newBudget = item.budget;
     },
     saveNewBudget() {
+      let newBudget = this.processInput();
       this.loading = true;
       this.$store
         .dispatch("saveNewBudget", {
           id: this.selectedCategory.id,
-          data: { budget: parseFloat(this.newBudget).toFixed(2) },
+          data: { budget: newBudget },
         })
         .then(() => {
           this.dialog = false;
           this.loading = false;
           this.$emit("getCategories");
         });
+    },
+    processInput() {
+      let newBudgetString = this.newBudget.toString();
+      if (newBudgetString.includes("+")) {
+        let arr = newBudgetString.split("+");
+        const result = parseFloat(arr[0]) + parseFloat(arr[1]);
+        return result.toFixed(2);
+      } else if (newBudgetString.includes("-")) {
+        let arr = newBudgetString.split("-");
+        const result = parseFloat(arr[0]) - parseFloat(arr[1]);
+        return result.toFixed(2);
+      } else return parseFloat(this.newBudget).toFixed(2);
     },
   },
 };
