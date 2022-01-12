@@ -1,6 +1,6 @@
-import Vue from "vue";
-import Vuex from "vuex";
-import axios from "axios";
+import Vue from 'vue';
+import Vuex from 'vuex';
+import axios from 'axios';
 
 Vue.use(Vuex);
 
@@ -9,7 +9,7 @@ export default new Vuex.Store({
     balance: null,
     balanceTriangon: null,
     categories: [],
-    transactions: [],
+    transactions: []
   },
   mutations: {
     setBalance(state, balance) {
@@ -23,7 +23,7 @@ export default new Vuex.Store({
     },
     setTransactions(state, transactions) {
       state.transactions = transactions;
-    },
+    }
   },
   actions: {
     async getBalance({ commit }) {
@@ -31,14 +31,10 @@ export default new Vuex.Store({
         .get(process.env.VUE_APP_URL_BALANCE)
         .then((res) => {
           if (res.status == 200) {
-            let balancePersonal = parseFloat(
-              Buffer.from(res.data.balance, "base64")
-            );
-            let balanceTriagon = parseFloat(
-              Buffer.from(res.data.balanceTriangon, "base64")
-            );
-            commit("setBalance", balancePersonal);
-            commit("setBalanceTriangon", balanceTriagon);
+            let balancePersonal = parseFloat(Buffer.from(res.data.balance, 'base64'));
+            let balanceTriagon = parseFloat(Buffer.from(res.data.balanceTriangon, 'base64'));
+            commit('setBalance', balancePersonal);
+            commit('setBalanceTriangon', balanceTriagon);
           }
         })
         .catch((error) => {
@@ -54,14 +50,11 @@ export default new Vuex.Store({
             return axios
               .post(`${process.env.VUE_APP_BASE_URL_API}/api/login`, {
                 email: payload.email,
-                password: payload.password,
+                password: payload.password
               })
               .then((res) => {
                 console.log(_);
-                localStorage.setItem(
-                  "triangon_budgeting_token",
-                  res.data.token
-                );
+                localStorage.setItem('triangon_budgeting_token', res.data.token);
                 return res;
               });
           }
@@ -74,13 +67,12 @@ export default new Vuex.Store({
       return axios
         .get(`${process.env.VUE_APP_BASE_URL_API}/api/categories`, {
           headers: {
-            Authorization:
-              "Bearer " + localStorage.getItem("triangon_budgeting_token"),
-          },
+            Authorization: 'Bearer ' + localStorage.getItem('triangon_budgeting_token')
+          }
         })
         .then((res) => {
           if (res.status == 200) {
-            commit("setCategories", res.data);
+            commit('setCategories', res.data);
           }
         })
         .catch((error) => {
@@ -89,18 +81,14 @@ export default new Vuex.Store({
     },
     async getTransactions({ commit }) {
       return axios
-        .get(
-          `${process.env.VUE_APP_BASE_URL_API}/api/transactions?processed=0`,
-          {
-            headers: {
-              Authorization:
-                "Bearer " + localStorage.getItem("triangon_budgeting_token"),
-            },
+        .get(`${process.env.VUE_APP_BASE_URL_API}/api/transactions?processed=0`, {
+          headers: {
+            Authorization: 'Bearer ' + localStorage.getItem('triangon_budgeting_token')
           }
-        )
+        })
         .then((res) => {
           if (res.status == 200) {
-            commit("setTransactions", res.data);
+            commit('setTransactions', res.data);
           }
         })
         .catch((error) => {
@@ -108,17 +96,13 @@ export default new Vuex.Store({
         });
     },
     async saveNewBudget({ _ }, payload) {
+      console.log(payload);
       return axios
-        .put(
-          `${process.env.VUE_APP_BASE_URL_API}/api/categories/${payload.id}`,
-          payload.data,
-          {
-            headers: {
-              Authorization:
-                "Bearer " + localStorage.getItem("triangon_budgeting_token"),
-            },
+        .put(`${process.env.VUE_APP_BASE_URL_API}/api/categories/${payload.id}`, payload.data, {
+          headers: {
+            Authorization: 'Bearer ' + localStorage.getItem('triangon_budgeting_token')
           }
-        )
+        })
         .then((res) => {
           if (res.status == 200) {
             console.log(_);
@@ -131,16 +115,11 @@ export default new Vuex.Store({
     },
     async processTransaction({ _ }, payload) {
       return axios
-        .put(
-          `${process.env.VUE_APP_BASE_URL_API}/api/transactions/${payload.id}`,
-          payload.data,
-          {
-            headers: {
-              Authorization:
-                "Bearer " + localStorage.getItem("triangon_budgeting_token"),
-            },
+        .put(`${process.env.VUE_APP_BASE_URL_API}/api/transactions/${payload.id}`, payload.data, {
+          headers: {
+            Authorization: 'Bearer ' + localStorage.getItem('triangon_budgeting_token')
           }
-        )
+        })
         .then((res) => {
           if (res.status == 200) {
             console.log(_);
@@ -152,13 +131,12 @@ export default new Vuex.Store({
         });
     },
     async logout() {
-      localStorage.removeItem("triangon_budgeting_token");
+      localStorage.removeItem('triangon_budgeting_token');
       return axios
         .post(`${process.env.VUE_APP_BASE_URL_API}/api/logout`, null, {
           headers: {
-            Authorization:
-              "Bearer " + localStorage.getItem("triangon_budgeting_token"),
-          },
+            Authorization: 'Bearer ' + localStorage.getItem('triangon_budgeting_token')
+          }
         })
         .then(() => {
           location.reload();
@@ -166,7 +144,7 @@ export default new Vuex.Store({
         .catch(() => {
           location.reload();
         });
-    },
+    }
   },
-  modules: {},
+  modules: {}
 });

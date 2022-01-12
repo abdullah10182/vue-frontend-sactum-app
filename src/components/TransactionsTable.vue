@@ -41,7 +41,7 @@
         <v-card-text>
           <v-container>
             <v-row>
-              <v-col cols="12" sm="6" md="4">
+              <v-col cols="12">
                 <v-text-field
                   label="Amount"
                   required
@@ -138,12 +138,16 @@ export default {
             processed: 1,
           },
         });
-
-        if (this.newBudgetAfterTransaction) {
+        if (
+          this.newBudgetAfterTransaction >= 0 &&
+          this.selectedCategoryItem?.budget > 0
+        ) {
           await this.$store.dispatch("saveNewBudget", {
             id: this.selectedCategory,
             data: {
-              budget: this.newBudgetAfterTransaction,
+              budget: String(
+                parseFloat(this.newBudgetAfterTransaction).toFixed(2)
+              ),
             },
           });
           await this.$store.dispatch("getCategories");

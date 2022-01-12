@@ -16,13 +16,14 @@
 
     <v-dialog v-model="dialog" persistent max-width="600px" v-if="dialog">
       <v-card>
-        <v-card-title>
-          <span class="text-h5">budget</span>
+        <v-card-title class="d-flex justify-space-between">
+          <span class="text-h5">Budget</span>
+          <v-btn small @click="zero()">Zero</v-btn>
         </v-card-title>
         <v-card-text>
           <v-container>
             <v-row>
-              <v-col cols="12" sm="6" md="4">
+              <v-col cols="12">
                 <v-text-field
                   label="Budget"
                   required
@@ -92,6 +93,9 @@ export default {
         const result = parseFloat(arr[0]) - parseFloat(arr[1]);
         return result.toFixed(2);
       } else return parseFloat(this.newBudget).toFixed(2);
+    },
+    zero() {
+      this.newBudget = "0.00";
     },
   },
 };
