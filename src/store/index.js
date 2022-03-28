@@ -6,14 +6,17 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    balance: null,
-    balanceTriangon: null,
+    user: {},
+    balances: [],
     categories: [],
     transactions: []
   },
   mutations: {
-    setBalance(state, balance) {
-      state.balance = balance;
+    setUser(state, user) {
+      state.user = user;
+    },
+    setBalances(state, balances) {
+      state.balances = balances;
     },
     setBalanceTriangon(state, balance) {
       state.balanceTriangon = balance;
@@ -26,15 +29,32 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    async getBalance({ commit }) {
-      return await axios
-        .get(process.env.VUE_APP_URL_BALANCE)
+    async getUser({ commit }) {
+      return axios
+        .get(`${process.env.VUE_APP_BASE_URL_API}/api/user`, {
+          headers: {
+            Authorization: 'Bearer ' + localStorage.getItem('triangon_budgeting_token')
+          }
+        })
         .then((res) => {
           if (res.status == 200) {
-            let balancePersonal = parseFloat(Buffer.from(res.data.balance, 'base64'));
-            let balanceTriagon = parseFloat(Buffer.from(res.data.balanceTriangon, 'base64'));
-            commit('setBalance', balancePersonal);
-            commit('setBalanceTriangon', balanceTriagon);
+            commit('setUser', res.data);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    async getBalances({ commit }) {
+      return axios
+        .get(`${process.env.VUE_APP_BASE_URL_API}/api/balance`, {
+          headers: {
+            Authorization: 'Bearer ' + localStorage.getItem('triangon_budgeting_token')
+          }
+        })
+        .then((res) => {
+          if (res.status == 200) {
+            commit('setBalances', res.data);
           }
         })
         .catch((error) => {

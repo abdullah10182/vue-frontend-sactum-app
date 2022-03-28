@@ -1,10 +1,11 @@
 <template>
   <div style="max-width: 600px" class="mx-auto">
-    <div v-if="balance" class="my-2 mx-auto d-flex mt-4">
+    <div v-if="balances.length > 0" class="my-2 mx-auto d-flex mt-4">
       <div class="ms-4">
-        <div class="caption">Balance: {{ balance }}</div>
-        <div class="caption">
-          Balance triangon: {{ $store.state.balanceTriangon }}
+        <div v-for="balance in balances" :key="balance.id">
+          <div class="caption">
+            {{ balance.account_alias }}: {{ balance.balance }}
+          </div>
         </div>
       </div>
       <v-spacer></v-spacer>
@@ -46,11 +47,11 @@ export default {
     transactions() {
       return this.$store.state.transactions;
     },
-    balance() {
-      return this.$store.state.balance;
+    balances() {
+      return this.$store.state.balances;
     },
     leftOverBalance() {
-      return this.balance - this.totalsBudget;
+      return this.balances[0]?.balance - this.totalsBudget;
     },
     totalsBudget() {
       let total = 0;
@@ -65,7 +66,7 @@ export default {
     if (!localStorage.getItem("triangon_budgeting_token"))
       this.$router.push("/login");
 
-    await this.$store.dispatch("getBalance");
+    await this.$store.dispatch("getBalances");
     this.getCategories();
     this.getTransactions();
   },
